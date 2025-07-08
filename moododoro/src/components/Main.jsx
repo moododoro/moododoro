@@ -45,7 +45,7 @@ const Main = () => {
         if(time === 0 && running) {
             completedSound();
         }
-    }, [time, play]);
+    }, [time, running]);
 
     const start = () => {
         setRunning(true);
