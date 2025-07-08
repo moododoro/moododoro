@@ -1,5 +1,5 @@
 import {useState, useEffect } from "react"
-import { useSound } from 'react-sounds';
+import useSound from 'use-sound';
 
 //TODO: set up session counter
 //TODO: add in breaks
@@ -10,8 +10,10 @@ const Main = () => {
     const [time, setTime] = useState(10);
     const [displayTime, setDisplayTime] = useState("")
     const [running, setRunning] = useState(false);
-    const {play} = useSound('/sounds/completed.mp3');
-    const {play: end} = useSound('/sounds/error.mp3');
+    const [completedSound] = useSound(`${import.meta.env.BASE_URL}sounds/completed.mp3`);
+    const [endSound] = useSound(`${import.meta.env.BASE_URL}sounds/error.mp3`);
+    const [pauseSound] = useSound(`${import.meta.env.BASE_URL}sounds/popup.mp3`);
+    const [startSound] = useSound(`${import.meta.env.BASE_URL}sounds/success.mp3`);
 
     // Use time
     useEffect(() => {
@@ -41,13 +43,14 @@ const Main = () => {
     // play sound if it ends
     useEffect(() => {
         if(time === 0 && running) {
-            play();
+            completedSound();
         }
     }, [time, play]);
 
     const start = () => {
         setRunning(true);
         setTime(10);
+        startSound();
     };
     
     function updateDisplayTime() {
@@ -64,12 +67,13 @@ const Main = () => {
 
     const pause = () => {
         setRunning(false);
+        pauseSound();
     };
 
     const stop = () => {
         setRunning(false);
         setTime(0);
-        end();
+        endSound();
     };
 
 

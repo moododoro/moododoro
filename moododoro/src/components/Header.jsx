@@ -1,3 +1,5 @@
+const logo = `${import.meta.env.BASE_URL}images/cow.png`
+
 const Header = () => {
   
   // TODO: add settings card on click to show timer settings
@@ -8,6 +10,7 @@ const Header = () => {
     <>
         <header className="flex bg-[#E5E0D8] items-center py-2 border-b">
             <nav className="flex items-center w-full text-[#444444]">
+                <img src={logo} width="50px" className="ml-4 mr-4"/>
                 <h1 className="mr-4 text-4xl">moododoro</h1>
                 <ul className="flex text-2xl ml-auto">
                     <li className="mr-4">background</li>
