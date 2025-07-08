@@ -1,12 +1,7 @@
-# React + Vite
+#Moododoro
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This app is a pomodoro timer that allows the user to have a fun focusing background. User has a choice of several default backgrounds, or they can use one of their own!
 
-Currently, two official plugins are available:
+OR it could be an app where if the user succesfully completes their task, they get to build out the background, and unlock new fun ones.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+OR it could be where they slowly are constructing a city throughout the time period as they complete their tasks / focus sessions
