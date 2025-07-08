@@ -1,6 +1,10 @@
 @import "tailwindcss";
 
+* {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
 body {
-  margin:0px;
-  background-color: #A8F1FF;
+    margin:0px;
+    background-color: #51c4cc;
 }
