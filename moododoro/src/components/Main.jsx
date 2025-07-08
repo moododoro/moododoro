@@ -7,7 +7,7 @@ import useSound from 'use-sound';
 
 const Main = () => {
     // State to hold the message
-    const [time, setTime] = useState(10);
+    const [time, setTime] = useState(1500);
     const [displayTime, setDisplayTime] = useState("")
     const [running, setRunning] = useState(false);
     const [completedSound] = useSound(`${import.meta.env.BASE_URL}sounds/completed.mp3`);
@@ -49,7 +49,7 @@ const Main = () => {
 
     const start = () => {
         setRunning(true);
-        setTime(10);
+        setTime(1500);
         startSound();
     };
     
