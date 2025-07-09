@@ -114,10 +114,10 @@ const Clock = ({workTime, setWorkTime, breakTime, setBreakTime}) => {
             <h1 className='text-9xl font-semibold justify-center'>{formatTime(time)}</h1>
         </div>
         <div className='flex p-4'>
-            <button className='m-2 border backdrop-blur-[px] border-white rounded-lg text-white p-2 hover:bg-[#E5E0D8]' onClick={start}>start</button>
-            <button className='m-2 border  border-white rounded-lg text-white p-2 hover:bg-[#E5E0D8]' onClick={pause}>pause</button>
-            <button className='m-2 border border-white rounded-lg text-white p-2 hover:bg-[#E5E0D8]' onClick={end}>end</button>
-            <button className='m-2 border border-white rounded-lg text-white p-2 hover:bg-[#E5E0D8]'>skip</button>
+            <button className='m-2 border-2 backdrop-blur-[px] border-white rounded-lg text-white p-2 hover:bg-[#E5E0D8]' onClick={start}>start</button>
+            <button className='m-2 border-2  border-white rounded-lg text-white p-2 hover:bg-[#E5E0D8]' onClick={pause}>pause</button>
+            <button className='m-2 border-2 border-white rounded-lg text-white p-2 hover:bg-[#E5E0D8]' onClick={end}>end</button>
+            <button className='m-2 border-2 border-white rounded-lg text-white p-2 hover:bg-[#E5E0D8]'>skip</button>
         </div>
     </main>
     )

@@ -11,7 +11,8 @@ function App() {
 
 return (
     <>
-        <Header workTime={workTime} setWorkTime={setWorkTime}/>
+        <Header workTime={workTime} setWorkTime={setWorkTime}
+                            breakTime={breakTime} setBreakTime={setBreakTime}/>
         <Clock workTime={workTime} breakTime={breakTime} 
                 running={running} setRunning={setRunning}/>
         <Footer/>
