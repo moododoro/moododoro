@@ -4,26 +4,29 @@ import useSound from 'use-sound';
 //TODO: set up session counter
 //TODO: add in breaks
 //TODO: add more sounds to buttons
+//TODO: stationary timer box
 
 const Main = () => {
     // State to hold the message
     const [time, setTime] = useState(1500);
     const [displayTime, setDisplayTime] = useState("")
     const [running, setRunning] = useState(false);
+    const [breaks, setBreaks] = useState(false);
     const [completedSound] = useSound(`${import.meta.env.BASE_URL}sounds/completed.mp3`);
     const [endSound] = useSound(`${import.meta.env.BASE_URL}sounds/error.mp3`);
     const [pauseSound] = useSound(`${import.meta.env.BASE_URL}sounds/popup.mp3`);
-    const [startSound] = useSound(`${import.meta.env.BASE_URL}sounds/success.mp3`);
+    const [startSound] = useSound(`${import.meta.env.BASE_URL}sounds/success.mp3`);    
 
-    // Use time
+    // Handle clock countdown
     useEffect(() => {
         // don't run until they hit start
         if (!running) return;
 
         // stop at 0!
-        if (time < 0) {
-        setRunning(false);
-        return;
+        if (time === 0) {
+            setBreaks(true);
+            start();
+            return;
         }
 
         const id = setInterval(() => {
@@ -44,12 +47,17 @@ const Main = () => {
     useEffect(() => {
         if(time === 0 && running) {
             completedSound();
+            setBreaks(!breaks);
         }
     }, [time, running]);
 
     const start = () => {
         setRunning(true);
-        setTime(1500);
+        if(breaks) {
+            setTime(300);
+        } else {
+            setTime(1500);
+        }
         startSound();
     };
     
@@ -66,7 +74,7 @@ const Main = () => {
     }
 
     const pause = () => {
-        setRunning(false);
+        setRunning(!running);
         pauseSound();
     };
 
