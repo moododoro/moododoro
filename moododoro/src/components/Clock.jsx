@@ -117,16 +117,16 @@ const Clock = ({workTime, setWorkTime, breakTime, setBreakTime, useImage, setIma
 
     return (
     <main className="flex flex-col items-center justify-center min-h-screen text-white transition-all duration-500 bg-[#51c4cc]" style={backgroundStyle}>
-        <div className="flex flex-col items-center border-4 border-double border-white rounded-lg p-8 text-white box-border w-[400px]">
+        <div className="backdrop-blur flex flex-col items-center border-4 border-double border-white rounded-lg p-8 text-white box-border w-[400px]">
             
             <h2 className='text-2xl font-semibold justify-center'>{mode} </h2>
             <h1 className='text-9xl font-semibold justify-center'>{formatTime(time)}</h1>
         </div>
         <div className='flex p-4'>
-            <button className='m-2 border-2 backdrop-blur-[px] border-white rounded-lg text-white p-2 hover:bg-[#E5E0D8]' onClick={start}>start</button>
-            <button className='m-2 border-2  border-white rounded-lg text-white p-2 hover:bg-[#E5E0D8]' onClick={pause}>pause</button>
-            <button className='m-2 border-2 border-white rounded-lg text-white p-2 hover:bg-[#E5E0D8]' onClick={end}>end</button>
-            <button className='m-2 border-2 border-white rounded-lg text-white p-2 hover:bg-[#E5E0D8]'>skip</button>
+            <button className='m-2 border-2 backdrop-blur border-white rounded-lg text-white p-2 hover:bg-[#E5E0D8]' onClick={start}>start</button>
+            <button className='backdrop-blur m-2 border-2  border-white rounded-lg text-white p-2 hover:bg-[#E5E0D8]' onClick={pause}>pause</button>
+            <button className='backdrop-blur m-2 border-2 border-white rounded-lg text-white p-2 hover:bg-[#E5E0D8]' onClick={end}>end</button>
+            <button className='backdrop-blur m-2 border-2 border-white rounded-lg text-white p-2 hover:bg-[#E5E0D8]'>skip</button>
         </div>
     </main>
     )
