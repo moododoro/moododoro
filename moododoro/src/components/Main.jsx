@@ -87,7 +87,7 @@ const Main = () => {
 
 
     return (
-    <main className='flex flex-col items-center justify-center min-h-screen text-white'>
+    <main className='flex flex-col items-center justify-center min-h-screen text-white bg-[#51c4cc]'>
         <div className="flex flex-col items-center border-4 border-double border-white rounded-lg max-w-s p-8 text-white">
             <h2 className='text-2xl font-semibold justify-center'>timer</h2>
             <h1 className='text-9xl font-semibold justify-center'>{displayTime}</h1>

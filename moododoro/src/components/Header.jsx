@@ -1,7 +1,8 @@
 import {useState, useEffect } from "react"
 const logo = `${import.meta.env.BASE_URL}images/cow.png`
+const bgimage = `${import.meta.env.BASE_URL}images/retro_futuristic_background.jpg`
 
-const Header = ({workTime, setWorkTime, breakTime, setBreakTime}) => {
+const Header = ({workTime, setWorkTime, breakTime, setBreakTime, setImage, useImage}) => {
   const [backgroundCard, setBackgroundCard] = useState(false);
   const [settingsCard, setSettingsCard] = useState(false);
   // TODO: add settings card on click to show timer settings
@@ -25,6 +26,17 @@ const Header = ({workTime, setWorkTime, breakTime, setBreakTime}) => {
     setSettingsCard(!settingsCard)
   }
 
+  function changeBackgroundImage() {
+    // change background in main?
+    console.log(bgimage);
+    setImage(bgimage);
+  }
+
+  function changeToClassic() {
+    // change background to default color
+    setImage();
+  }
+
   return (
     <div className="relative bg-[#E5E0D8]">
           
@@ -40,15 +52,21 @@ const Header = ({workTime, setWorkTime, breakTime, setBreakTime}) => {
       </header>
 
       {backgroundCard && (
-        <div className="absolute top-15 right-1 z-50 bg-[#E5E0D8] p-4 border-2 rounded shadow w-64">
-          <p className="underline">background</p>
-          <input className="border rounded"/>
+        <div className="absolute top-15 right-1 z-50 bg-[#E5E0D8] p-4 border rounded shadow-l w-64">
+          <p className="text-2xl">background</p>
+          <p className="text">retro-futuristic</p>
+          <button className= "border" onClick={changeBackgroundImage}>
+            <img src={bgimage} alt="Custom Button" className="hover:opacity-80" />
+          </button>
+          <p className="text">static</p>
+          <button className="w-[222px] h-[121px] bg-[#51c4cc] hover:opacity-80 rounded border" onClick={changeToClassic}>
+          </button>
         </div>
       )}
 
       {settingsCard && (
-        <div className="absolute top-15 right-1 z-50 bg-[#E5E0D8] p-4 rounded shadow w-64">
-          <p className="underline">settings</p>
+        <div className="absolute top-15 right-1 bg-[#E5E0D8] p-4 border rounded shadow-l">
+          <p className="text-2xl">settings</p>
           <div className="flex flex-col">
             <p>Work Timer</p>
             <input className="border rounded" type="number" defaultValue={1500}

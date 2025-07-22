@@ -7,7 +7,7 @@ import useSound from 'use-sound';
 //TODO: stationary timer box
 let STATES = ["work", "break", "paused", "longBreak"];
 
-const Clock = ({workTime, setWorkTime, breakTime, setBreakTime}) => {
+const Clock = ({workTime, setWorkTime, breakTime, setBreakTime, useImage, setImage}) => {
     
     // hooks
     const[time, setTime] = useState(workTime);
@@ -50,7 +50,7 @@ const Clock = ({workTime, setWorkTime, breakTime, setBreakTime}) => {
         }        
     },[mode]);
 
-
+    // change mode
     function workMode() {
         if (mode != "work") return;
 
@@ -65,9 +65,10 @@ const Clock = ({workTime, setWorkTime, breakTime, setBreakTime}) => {
                 });
             }, 1000);
 
-    return () => clearInterval(id);
-}
+        return () => clearInterval(id);
+    }
 
+    // change mode
     function breakMode() {
         if (mode != "break") return;
 
@@ -102,12 +103,20 @@ const Clock = ({workTime, setWorkTime, breakTime, setBreakTime}) => {
         let min = Math.floor(time / 60).toString().padStart(2,"0");
         const sec = (time % 60).toString().padStart(2,"0");
         return `${min}:${sec}`;
-        
     }
+
+    const backgroundStyle = useImage
+    ? {
+        backgroundImage: `url(${useImage})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+      }
+    : {};
 
 
     return (
-    <main className='flex flex-col items-center justify-center min-h-screen text-white'>
+    <main className="flex flex-col items-center justify-center min-h-screen text-white transition-all duration-500 bg-[#51c4cc]" style={backgroundStyle}>
         <div className="flex flex-col items-center border-4 border-double border-white rounded-lg p-8 text-white box-border w-[400px]">
             
             <h2 className='text-2xl font-semibold justify-center'>{mode} </h2>
