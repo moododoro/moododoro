@@ -1,6 +1,7 @@
 import {useState, useEffect } from "react"
 import useSound from 'use-sound';
-
+const startSound = `${import.meta.env.BASE_URL}sounds/success.mp3`
+const endSound = `${import.meta.env.BASE_URL}sounds/completed.mp3`
 //TODO: set up session counter
 //TODO: add in breaks
 //TODO: add more sounds to buttons
@@ -14,6 +15,8 @@ const Clock = ({workTime, setWorkTime, breakTime, setBreakTime, useImage, setIma
     const[displayTime, setDisplayTime] = useState("25:00")// displayTime
     const[mode, setMode] = useState("work")// mode (work, break, paused, long break)
     const[running, setRunning] = useState(false);
+    const[playStart] = useSound(startSound);
+    const[playEnd] = useSound(endSound);
 
     // count down time
     useEffect(() => {
@@ -87,6 +90,7 @@ const Clock = ({workTime, setWorkTime, breakTime, setBreakTime, useImage, setIma
     }
 
     function start() {
+        playStart();
         setRunning(true);
     }
 
@@ -95,8 +99,22 @@ const Clock = ({workTime, setWorkTime, breakTime, setBreakTime, useImage, setIma
     }
 
     function end() {
+        playEnd();
         setRunning(false);
         setTime(0);
+    }
+
+    function skip() {
+        // change mode
+        if(mode === "work") {
+            end();
+            breakMode();
+            start();
+        } else if (mode === "break") {
+            end();
+            workMode();
+            start();
+        }
     }
 
     function formatTime(time){
@@ -126,7 +144,7 @@ const Clock = ({workTime, setWorkTime, breakTime, setBreakTime, useImage, setIma
             <button className='m-2 border-2 backdrop-blur border-white rounded-lg text-white p-2 hover:bg-[#E5E0D8]' onClick={start}>start</button>
             <button className='backdrop-blur m-2 border-2  border-white rounded-lg text-white p-2 hover:bg-[#E5E0D8]' onClick={pause}>pause</button>
             <button className='backdrop-blur m-2 border-2 border-white rounded-lg text-white p-2 hover:bg-[#E5E0D8]' onClick={end}>end</button>
-            <button className='backdrop-blur m-2 border-2 border-white rounded-lg text-white p-2 hover:bg-[#E5E0D8]'>skip</button>
+            <button className='backdrop-blur m-2 border-2 border-white rounded-lg text-white p-2 hover:bg-[#E5E0D8]'onClick={skip}>skip</button>
         </div>
     </main>
     )
