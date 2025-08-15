@@ -96,6 +96,15 @@ const Header = () => {
             defaultValue={longBreakTime}
             onChange={(e) => setLongBreakTime(Number(e.target.value))}/>
           </div >
+          <div className="flex flex-col">
+            <p className="text-2xl">Long break Timer (min)</p>
+            <input className="text-2xl border rounded mb-2"
+            type="number" 
+            max="99"
+            min="1"
+            defaultValue={longBreakTime}
+            onChange={(e) => setLongBreakTime(Number(e.target.value))}/>
+          </div >
             <div className="flex justify-end mt-2">
               <button className="w-[16] bg-backdrop-blur bg-gray-600 m-2 border-2 text-2xl border-white rounded-lg text-white p-2 hover:opacity-80" 
                 type="submit"> 
