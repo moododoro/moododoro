@@ -1,102 +1,29 @@
-import {useState, useEffect } from "react"
-import useSound from 'use-sound';
-
-//TODO: set up session counter
-//TODO: add in breaks
-//TODO: add more sounds to buttons
-//TODO: stationary timer box
+import {useState, useContext } from "react"
+import { StateContext } from "../contexts/StateContext";
+import { TimerContext } from "../contexts/TimerContext";
 
 const Main = () => {
-    // State to hold the message
-    const [time, setTime] = useState(1500);
-    const [displayTime, setDisplayTime] = useState("")
-    const [running, setRunning] = useState(false);
-    const [breaks, setBreaks] = useState(false);
-    const [completedSound] = useSound(`${import.meta.env.BASE_URL}sounds/completed.mp3`);
-    const [endSound] = useSound(`${import.meta.env.BASE_URL}sounds/error.mp3`);
-    const [pauseSound] = useSound(`${import.meta.env.BASE_URL}sounds/popup.mp3`);
-    const [startSound] = useSound(`${import.meta.env.BASE_URL}sounds/success.mp3`);    
-
-    // Handle clock countdown
-    useEffect(() => {
-        // don't run until they hit start
-        if (!running) return;
-
-        // stop at 0!
-        if (time === 0) {
-            setBreaks(true);
-            start();
-            return;
-        }
-
-        const id = setInterval(() => {
-            setTime(c => c - 1);
-        }, 1000);
-        return () => {
-            clearInterval(id);
-        };
-    }, [running]);
-
-    // update display timer
-    useEffect(() => {
-        if (time < 0) return;
-        updateDisplayTime();
-    }, [time]);
-
-    // play sound if it ends
-    useEffect(() => {
-        if(time === 0 && running) {
-            completedSound();
-            setBreaks(!breaks);
-        }
-    }, [time, running]);
-
-    const start = () => {
-        setRunning(true);
-        if(breaks) {
-            setTime(300);
-        } else {
-            setTime(1500);
-        }
-        startSound();
-    };
     
-    function updateDisplayTime() {
-        // convert to minutes
-        let minutes = time / 60;
-        let seconds = Math.round((minutes - Math.floor(minutes)) * 60);
-        
-        // handle padding
-        let display = String(Math.floor(minutes)).padStart(2,'0') + ":" + String(seconds).padStart(2, '0');
-
-        // set display time
-        setDisplayTime(display);
-    }
-
-    const pause = () => {
-        setRunning(!running);
-        pauseSound();
-    };
-
-    const stop = () => {
-        setRunning(false);
-        setTime(0);
-        endSound();
-    };
-
-
+    // hooks
+    const{state} = useContext(StateContext);
+    const{startTimer, pauseTimer, skipTimer, endTimer, formatTime, timeLeft, timerCount} = useContext(TimerContext);
 
     return (
-    <main className='flex flex-col items-center justify-center min-h-screen text-white bg-[#51c4cc]'>
-        <div className="flex flex-col items-center border-4 border-double border-white rounded-lg max-w-s p-8 text-white">
-            <h2 className='text-2xl font-semibold justify-center'>timer</h2>
-            <h1 className='text-9xl font-semibold justify-center'>{displayTime}</h1>
+    <main className="flex flex-col items-center min-h-screen text-white transition-all duration-500 bg-[#51c4cc]">
+        <div className="backdrop-blur flex flex-col items-center border-8 border-double border-white rounded-lg p-8 text-white box-border w-[600px] h-min mt-30">
+            <h2 className='text-4xl font-semibold'>{state}</h2>
+            <div className="w-full text-center">
+                <h1 className='text-[10rem] font-mono font-semibold'>
+                {formatTime(timeLeft)}
+                </h1>
+            </div>
+            <h2 className='text-4xl font-semibold'>#{timerCount}</h2>
         </div>
-        <div className='flex p-4'>
-            <button className='m-2 border backdrop-blur-[px] border-white rounded-lg text-white p-2 hover:bg-[#E5E0D8]' onClick={start}>start</button>
-            <button className='m-2 border  border-white rounded-lg text-white p-2 hover:bg-[#E5E0D8]' onClick={pause}>pause</button>
-            <button className='m-2 border border-white rounded-lg text-white p-2 hover:bg-[#E5E0D8]' onClick={stop}>end</button>
-            <button className='m-2 border border-white rounded-lg text-white p-2 hover:bg-[#E5E0D8]' onClick={stop}>skip</button>
+        <div className='flex p-4 text-[1.5rem]'>
+            <button className='m-2 border-2 backdrop-blur border-white rounded-lg text-white p-2 hover:bg-[#E5E0D8]' onClick={startTimer}>start</button>
+            <button className='backdrop-blur m-2 border-2  border-white rounded-lg text-white p-2 hover:bg-[#E5E0D8]' onClick={pauseTimer}>pause</button>
+            <button className='backdrop-blur m-2 border-2 border-white rounded-lg text-white p-2 hover:bg-[#E5E0D8]' onClick={endTimer}>end</button>
+            <button className='backdrop-blur m-2 border-2 border-white rounded-lg text-white p-2 hover:bg-[#E5E0D8]'onClick={skipTimer}>skip</button>
         </div>
     </main>
     )
