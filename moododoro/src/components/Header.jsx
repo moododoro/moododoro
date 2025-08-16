@@ -1,19 +1,27 @@
 import {useState, useContext } from "react"
 const logo = `${import.meta.env.BASE_URL}images/cow.png`
-const bgimage = `${import.meta.env.BASE_URL}images/retro_futuristic_background.jpg`
+const vaporWaveBg = `${import.meta.env.BASE_URL}images/retro_futuristic_background.jpg`
+const vaporWaveBgURL = `url(${import.meta.env.BASE_URL}images/retro_futuristic_background.jpg)`;
 import { StateContext } from "../contexts/StateContext"
 import { TimerContext } from "../contexts/TimerContext"
+import { ImageContext } from "../contexts/ImageContext"
 
 const Header = () => {
   
+  // stuff for cards
   const [backgroundCard, setBackgroundCard] = useState(false);
   const [settingsCard, setSettingsCard] = useState(false);
+
+  // stuff for changing timer
   const {changeDuration, durations, state, changeState} = useContext(StateContext);
   const {setIsRunning, setTimeLeft} = useContext(TimerContext);
   const [workTime, setWorkTime] = useState(durations["work"]/60);
   const [shortBreakTime, setShortBreakTime] = useState(durations["short break"]/60);
   const [longBreakTime, setLongBreakTime] = useState(durations["long break"]/60);
 
+  // stuff for changing background
+  const {changeBackground} = useContext(ImageContext);
+  const [customBg, setCustomBg] = useState("");
 
   // handles background card generation
   function backgrounds() {
@@ -28,17 +36,6 @@ const Header = () => {
     setSettingsCard(!settingsCard)
   }
 
-  function changeBackgroundImage() {
-    // change background in main?
-    console.log(bgimage);
-    setImage(bgimage);
-  }
-
-  function changeToClassic() {
-    // change background to default color
-    setImage();
-  }
-
   const handleSubmit = (e) => {
     e.preventDefault(); // no page reload
     changeDuration("work", workTime * 60);
@@ -46,8 +43,13 @@ const Header = () => {
     changeDuration("long break", shortBreakTime * 60);            
   }
 
+  const handleSubmitBg = (e) => {
+    e.preventDefault(); // no page reload
+    changeBackground(`url(${customBg})`);       
+  }
+
   return (
-    <div className="relative bg-[#E5E0D8]">
+    <div className="relative bg-[#E5E0D8] font-[Franklin Gothic Medium]">
           
       <header className="flex bg-[#E5E0D8] items-center py-2 border-b-2">
           <nav className="flex items-center w-full text-[#444444]">
@@ -64,12 +66,21 @@ const Header = () => {
         <div className="absolute top-25 right-[10ch] z-50 bg-[#E5E0D8] p-4 border rounded shadow-l w-64">
           <p className="text-3xl mb-2">background</p>
           <p className="text-2xl mb-2">retro-futuristic</p>
-          <button className= "border" onClick={changeBackgroundImage}>
-            <img src={bgimage} alt="Custom Button" className="hover:opacity-80" />
+          <button className= "border" onClick={() => changeBackground(vaporWaveBgURL)} value="image_1">
+            <img src={vaporWaveBg} alt="Custom Button" className="hover:opacity-80" />
           </button>
           <p className="text-2xl mb-2">static</p>
-          <button className="w-[222px] h-[121px] bg-[#51c4cc] hover:opacity-80 rounded border" onClick={changeToClassic}>
+          <button className="w-[222px] h-[121px] bg-[#51c4cc] hover:opacity-80 rounded border" onClick={() => changeBackground(null)}>
           </button>
+          <p className="text-2xl mb-2">Custom</p>
+          <form onSubmit={handleSubmitBg}>
+            <input className="text-2xl border rounded mb-2 p-2 w-full overflow-x-auto whitespace-nowrap" type="text" 
+            onChange={(e) => setCustomBg(e.target.value)}/>
+            <button className="w-[16] bg-backdrop-blur bg-gray-600 m-2 border-2 text-2xl border-white rounded-lg text-white p-2 hover:opacity-80" 
+                type="submit"> 
+                ok
+              </button>
+          </form>
         </div>
       )}
 
