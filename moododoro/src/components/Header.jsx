@@ -38,9 +38,10 @@ const Header = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault(); // no page reload
-    changeDuration("work", workTime);
-    changeDuration("short break", shortBreakTime);
-    changeDuration("long break", longBreakTime);            
+    const conversion = 60; // seconds in a minute
+    changeDuration("work", workTime * conversion);
+    changeDuration("short break", shortBreakTime * conversion);
+    changeDuration("long break", longBreakTime * conversion);            
   }
 
   const handleSubmitBg = (e) => {
