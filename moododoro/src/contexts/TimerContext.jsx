@@ -8,6 +8,7 @@ const startSound = `${import.meta.env.BASE_URL}sounds/success.mp3`;
 const endSound = `${import.meta.env.BASE_URL}sounds/completed.mp3`;
 const skipSound = `${import.meta.env.BASE_URL}sounds/error.mp3`;
 const pauseSound = `${import.meta.env.BASE_URL}sounds/popup.mp3`;
+
 // create context
 export const TimerContext = createContext({
     timeLeft: 0,
@@ -24,7 +25,8 @@ export function TimerContextProvider({ children }) {
     const [timeLeft, setTimeLeft] = useState(0); // seconds remaining
     const [isRunning, setIsRunning] = useState(false);
     const {state, durations, changeState} = useContext(StateContext);
-    const [timerCount, setTimerCount] = useState(0);
+    const [timerCount, setTimerCount] = useState(1);
+    const [intervalsTilLongBreak, setIntervalsTilLongBreak] = useState(3);
     const[playStart] = useSound(startSound);
     const[playEnd] = useSound(endSound);
     const[playSkip] = useSound(skipSound);
@@ -33,7 +35,6 @@ export function TimerContextProvider({ children }) {
     // use effects to update timer when state changes
     useEffect(()=> {
         setTimeLeft(durations[state]);
-        setTimerCount(prev => prev + 1);
     },[state, durations]);
 
     // use effect to countdown timer when it is running
@@ -46,6 +47,8 @@ export function TimerContextProvider({ children }) {
 
         // check for time == 0
         if (timeLeft === 0) {
+            playEnd();
+            clearInterval(interval);
             setTimeout(() => changeState(nextMode()),1000);
         }
 
@@ -54,15 +57,17 @@ export function TimerContextProvider({ children }) {
 
     
     const startTimer = () => {
-        console.log("Start Timer");
-        setIsRunning(true);
-        playStart();
-    }
-
-    const pauseTimer = () => {
-        console.log("Pause Timer");
-        playPause();
-        setIsRunning(false);
+        if (isRunning) {
+            console.log("Pause Timer");
+            playPause();
+            
+        } else {
+            console.log("Start timer");
+            playStart();
+        }
+        
+        setIsRunning(!isRunning);
+        
     }
 
     const skipTimer = () => {
@@ -89,21 +94,36 @@ export function TimerContextProvider({ children }) {
         return `${min}:${sec}`;
     }
 
-    const nextMode = () => {
+    /**
+     * This method handles state changes during events that trigger a state change.
+     * @returns next state to change to
+     */
+    const nextMode = () => {        
+
         // get key array
         const keysArray = Object.keys(durations);
-        
-        // get current index
-        let index = keysArray.indexOf(state);
+        const index = keysArray.indexOf(state);
 
-        // change to next index with wrap around
-        index = (index + 1) % keysArray.length;
-        return keysArray[index];    
+        // check counter for a long break
+        if (timerCount % intervalsTilLongBreak == 0 && index != 2) {
+            return keysArray[2] // set to L_break
+        }
+
+        // change to next index with wrap around can only set 0 or 1
+        switch (keysArray.indexOf(state)) {
+            case(0): // switching from work to break
+                return keysArray[1];
+            default: // switching from short break to work
+                setTimerCount((prev) => prev + 1);
+                return keysArray[0]
+        } 
     }
 
     return (
-        <TimerContext.Provider value={{startTimer, pauseTimer, skipTimer, 
-                                        endTimer, formatTime, timeLeft, timerCount, setIsRunning, setTimeLeft}}>
+        <TimerContext.Provider value={{startTimer, skipTimer, 
+                                        endTimer, formatTime, timeLeft, 
+                                        timerCount, setIsRunning, setTimeLeft,
+                                        isRunning}}>
             {children}
         </TimerContext.Provider>
     );

@@ -38,9 +38,9 @@ const Header = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault(); // no page reload
-    changeDuration("work", workTime * 60);
-    changeDuration("short break", shortBreakTime * 60);
-    changeDuration("long break", shortBreakTime * 60);            
+    changeDuration("work", workTime);
+    changeDuration("short break", shortBreakTime);
+    changeDuration("long break", longBreakTime);            
   }
 
   const handleSubmitBg = (e) => {
@@ -76,10 +76,12 @@ const Header = () => {
           <form onSubmit={handleSubmitBg}>
             <input className="text-2xl border rounded mb-2 p-2 w-full overflow-x-auto whitespace-nowrap" type="text" 
             onChange={(e) => setCustomBg(e.target.value)}/>
-            <button className="w-[16] bg-backdrop-blur bg-gray-600 m-2 border-2 text-2xl border-white rounded-lg text-white p-2 hover:opacity-80" 
+            <div className="flex justify-end mt-2">
+              <button className="w-[64px] bg-backdrop-blur bg-gray-600 m-2 border-2 text-2xl border-white rounded-lg text-white p-1 hover:opacity-80" 
                 type="submit"> 
                 ok
               </button>
+            </div>
           </form>
         </div>
       )}
@@ -108,7 +110,7 @@ const Header = () => {
             onChange={(e) => setLongBreakTime(Number(e.target.value))}/>
           </div >
             <div className="flex justify-end mt-2">
-              <button className="w-[16] bg-backdrop-blur bg-gray-600 m-2 border-2 text-2xl border-white rounded-lg text-white p-2 hover:opacity-80" 
+              <button className="w-[64px] bg-backdrop-blur bg-gray-600 m-2 border-2 text-2xl border-white rounded-lg text-white p-1 hover:opacity-80" 
                 type="submit"> 
                 ok
               </button>
