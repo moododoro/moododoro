@@ -1,0 +1,4 @@
+Features to add:
+- Remember last known website user entered
+- Make mobile friendly / resizeable
+- When updating new time, if timer is running do not reset it!
