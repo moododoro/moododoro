@@ -15,7 +15,7 @@ const Header = () => {
 
   const { changeDuration, durations} = useContext(StateContext);
   const {intervalsTilLongBreak, setIntervalsTilLongBreak } = useContext(TimerContext);
-  const { changeBackground } = useContext(ImageContext);
+  const { changeBackground, changeVideoBackground, setBgIsImage } = useContext(ImageContext);
 
   const [workTime, setWorkTime] = useState(durations["work"] / 60);
   const [shortBreakTime, setShortBreakTime] = useState(durations["short break"] / 60);
@@ -33,7 +33,6 @@ const Header = () => {
     setBackgroundCard(false);
     setMenuOpen(false);
   };
-
   const handleSubmitTimers = (e) => {
     setSettingsCard(!settingsCard);
     e.preventDefault();
@@ -47,7 +46,15 @@ const Header = () => {
     setBackgroundCard(!backgroundCard);
     e.preventDefault();
     if(customBg != "") {
-      changeBackground(`url(${customBg})`);
+      // check for video
+      if (customBg.includes("youtu")) {
+        setBgIsImage(false);
+        changeVideoBackground(customBg);
+      } else {
+        setBgIsImage(true);
+        changeBackground(`url(${customBg})`);
+      }
+      
     }
   };
 
@@ -113,7 +120,10 @@ const Header = () => {
           <p className="text-2xl mb-2">static</p>
           <button
             className="w-[222px] h-[121px] bg-[#51c4cc] hover:opacity-80 rounded border mb-2"
-            onClick={() => changeBackground(null)}
+            onClick={() => {
+              setBgIsImage(false);
+              changeBackground(null);
+            }}
           />
           <p className="text-2xl mb-2">Custom</p>
           <form onSubmit={handleSubmitBg}>
