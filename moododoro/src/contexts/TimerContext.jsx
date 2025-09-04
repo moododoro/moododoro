@@ -94,6 +94,10 @@ export function TimerContextProvider({ children }) {
         return `${min}:${sec}`;
     }
 
+    const resetTimer = () => {
+        setTimerCount(1);
+    }
+
     /**
      * This method handles state changes during events that trigger a state change.
      * @returns next state to change to
@@ -123,7 +127,8 @@ export function TimerContextProvider({ children }) {
         <TimerContext.Provider value={{startTimer, skipTimer, 
                                         endTimer, formatTime, timeLeft, 
                                         timerCount, setIsRunning, setTimeLeft,
-                                        isRunning}}>
+                                        isRunning, intervalsTilLongBreak, 
+                                        setIntervalsTilLongBreak, resetTimer}}>
             {children}
         </TimerContext.Provider>
     );

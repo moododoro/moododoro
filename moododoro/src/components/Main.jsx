@@ -8,7 +8,7 @@ const Main = () => {
     // hooks
     const{state} = useContext(StateContext);
     const{startTimer, pauseTimer, skipTimer, endTimer, formatTime, timeLeft, 
-        timerCount, isRunning} = useContext(TimerContext);
+        timerCount, isRunning, resetTimer} = useContext(TimerContext);
     const {background} = useContext(ImageContext);
 
     const isImage = background.startsWith("url(");
@@ -34,6 +34,7 @@ const Main = () => {
             </button>
             <button className='backdrop-blur m-2 border-2 border-white rounded-lg text-white p-2 hover:bg-[#E5E0D8]' onClick={endTimer}>end</button>
             <button className='backdrop-blur m-2 border-2 border-white rounded-lg text-white p-2 hover:bg-[#E5E0D8]'onClick={skipTimer}>skip</button>
+            <button className='backdrop-blur m-2 border-2 border-white rounded-lg text-white p-2 hover:bg-[#E5E0D8]'onClick={resetTimer}>reset</button>
         </div>
     </main>
     )

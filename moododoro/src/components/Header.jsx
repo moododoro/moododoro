@@ -13,8 +13,8 @@ const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false); // Mobile hamburger toggle
   const [customBg, setCustomBg] = useState("");
 
-  const { changeDuration, durations, state, changeState } = useContext(StateContext);
-  const { setIsRunning, setTimeLeft } = useContext(TimerContext);
+  const { changeDuration, durations} = useContext(StateContext);
+  const {intervalsTilLongBreak, setIntervalsTilLongBreak } = useContext(TimerContext);
   const { changeBackground } = useContext(ImageContext);
 
   const [workTime, setWorkTime] = useState(durations["work"] / 60);
@@ -173,6 +173,18 @@ const Header = () => {
                 max="99"
                 value={longBreakTime}
                 onChange={(e) => setLongBreakTime(Number(e.target.value))}
+              />
+            </div>
+            <div className="flex flex-col">
+              <label className="text-2xl">Long Break Interval</label>
+              <input
+                className="text-2xl border rounded"
+                type="number"
+                step="1"
+                min="1"
+                max="99"
+                 value={intervalsTilLongBreak}
+                onChange={(e) => setIntervalsTilLongBreak(Number(e.target.value))}
               />
             </div>
             <div className="flex justify-end mt-2">
