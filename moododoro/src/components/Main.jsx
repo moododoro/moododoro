@@ -21,14 +21,14 @@ const Main = () => {
         backgroundPosition: isImage ? "center" : undefined,
      }} 
     className="flex flex-col items-center min-h-screen text-white transition-all duration-500">
-        <div className="backdrop-blur flex flex-col items-center border-8 border-double border-white rounded-lg p-8 text-white box-border sm:w-full md:w-[600px] h-min mt-30">
-            <h2 className='text-4xl font-semibold'>{state}</h2>
-                <h1 id="timer" className='text-center md:text-[10rem] text-[8rem] font-[Cutive Mono]'>
+        <div className="backdrop-blur flex flex-col items-center border-8 border-double border-white rounded-lg text-white box-border mt-30 p-6 lg:p-12 space-y-2 sm:space-y-4 md:space-y-6">
+            <h2 className='text-lg sm:text-xl md:text-3xl lg:text-5xl font-semibold'>{state}</h2>
+            <h1 id="timer" className='text-center text-6xl sm:text-7xl md:text-8xl lg:text-9xl text-font-[Cutive Mono]'>
                 {formatTime(timeLeft)}
-                </h1>
-            <h2 className='text-4xl font-semibold'>#{timerCount}</h2>
+            </h1>
+            <h2 className='text-lg sm:text-xl md:text-3xl lg:text-5xl font-semibold'>#{timerCount}</h2>
         </div>
-        <div className='flex p-4 md:text-[1.5rem] text-[1rem]'>
+        <div className='flex p-4 md:text-[1.5rem] text-[1rem] '>
             <button className='m-2 border-2 backdrop-blur border-white rounded-lg text-white p-2 hover:bg-[#E5E0D8]' onClick={startTimer}>
                 {isRunning ? "pause" : "start"}
             </button>
