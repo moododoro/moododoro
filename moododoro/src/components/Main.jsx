@@ -19,7 +19,7 @@ const Main = () => {
       {!bgIsImage && (
         <iframe 
             className="absolute top-0 left-0 w-full h-full object-cover"
-            src={`https://www.youtube.com/embed/${background}?autoplay=0&mute=0&loop=1&playlist=${background}&controls=1&modestbranding=1`}
+            src={`https://www.youtube.com/embed/${background}?autoplay=0&mute=0&loop=1&controls=1&modestbranding=1`}
             frameBorder="0"
             allow="autoplay; fullscreen"
             allowFullScreen
