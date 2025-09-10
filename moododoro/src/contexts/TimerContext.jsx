@@ -40,7 +40,7 @@ export function TimerContextProvider({ children }) {
     // use effect to countdown timer when it is running
     useEffect(() => {                              // Define a side effect that runs after the component renders and whenever `isRunning` changes
         if (!isRunning) return;                      // If the timer is not running, exit early (do nothing)
-        document.title = `moododoro - ${formatTime(timeLeft)}  [${state[0]}]`; // set title
+        document.title = `${formatTime(timeLeft)}  [${state[0]}] - moododoro`; // set title
         const interval = setInterval(() => {         // Start a new interval that repeats the inner function every 1000ms (1 second)
             setTimeLeft(prev => prev - 1);             // Decrement `timeLeft` by 1 each second
         }, 1000);
