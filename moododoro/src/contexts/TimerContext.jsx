@@ -41,19 +41,27 @@ export function TimerContextProvider({ children }) {
     useEffect(() => {                              // Define a side effect that runs after the component renders and whenever `isRunning` changes
         if (!isRunning) return;                      // If the timer is not running, exit early (do nothing)
         document.title = `${formatTime(timeLeft)}  [${state[0]}] - moododoro`; // set title
-        const interval = setInterval(() => {         // Start a new interval that repeats the inner function every 1000ms (1 second)
-            setTimeLeft(prev => prev - 1);             // Decrement `timeLeft` by 1 each second
-        }, 1000);
+        const start = Date.now();
+        const end = start + timeLeft * 1000;
 
-        // check for time == 0
-        if (timeLeft === 0) {
+    const tick = () => {
+        const now = Date.now();
+        const diff = Math.max(0, Math.round((end - now) / 1000));
+        setTimeLeft(diff);
+        document.title = `${formatTime(diff)}  [${state[0]}] - moododoro`; // udpate timer
+
+        if (diff === 0) {
             playEnd();
+            changeState(nextMode());
             clearInterval(interval);
-            setTimeout(() => changeState(nextMode()),1000);
         }
+    };
 
-        return () => clearInterval(interval);
-    }, [isRunning, timeLeft]);                               
+    tick(); // run once immediately
+    const interval = setInterval(tick, 1000);
+
+    return () => clearInterval(interval);
+}, [isRunning]);                            
 
     
     const startTimer = () => {
