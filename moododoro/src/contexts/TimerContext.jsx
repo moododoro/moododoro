@@ -35,6 +35,7 @@ export function TimerContextProvider({ children }) {
     // use effects to update timer when state changes
     useEffect(()=> {
         setTimeLeft(durations[state]);
+        setIsRunning(true)
     },[state, durations]);
 
     // use effect to countdown timer when it is running
