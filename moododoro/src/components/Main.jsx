@@ -29,10 +29,13 @@ const Main = () => {
   return (
   <main className="relative flex flex-col items-center min-h-screen text-white transition-all duration-500 w-full bg-[#51c4cc]">
     <Timer running={running}/>
-    <Button text="start" onClick={handleStart}/>
-    <Button text="pause" onClick={handlePause}/>
-    <Button text="next"/>
-    <Button text="stop"/>
+    <div className="[&>*]:mx-2 [&>*]:p-2 [&>*]:border-2 [&>*]:hover:bg-[#E5E0D8]">
+      <Button text="start" onClick={handleStart}/>
+      <Button text="pause" onClick={handlePause}/>
+      <Button text="next"/>
+      <Button text="stop"/>
+    </div>
+
   </main>
   )
 }

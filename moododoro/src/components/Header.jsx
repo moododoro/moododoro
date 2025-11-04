@@ -16,12 +16,15 @@ const Header = () => {
       
   // bg-[#E5E0D8] font-[Franklin Gothic Medium]
   return (
-   <nav className="bg-[#E5E0D8] h-[50px] font-[Franklin Gothic Medium]">
-    <ol className="flex flex-row">
-      <li> <img className="h-[50px]" src={logo}/> </li>
-      <li><Button text="settings" onClick={handleSettingsClick}/></li>
-      <li><Button text="background" onClick={handleBackgroundClick}/></li>
-    </ol>
+   <nav className="bg-[#E5E0D8] h-[40px] font-[Franklin Gothic Medium] border-b-2 flex flex-row [&_*]:mx-2 [&_*]:items-center">
+      <div className="flex flex-row text-2xl">
+        <img className="h-[35px]" src={logo}/>
+        <h1>moododoro</h1>
+      </div>
+      <div className="flex w-screen justify-end text-2xl">
+        <Button text="settings" onClick={handleSettingsClick}/>
+        <Button text="background" onClick={handleBackgroundClick}/>
+      </div>
    </nav>
   )
 };
