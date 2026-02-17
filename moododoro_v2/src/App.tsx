@@ -20,6 +20,7 @@ type TimerDurations = {
 interface Timer {
     mode: TimerState;
     durations: TimerDurations;
+    elapsedTime: number;
     timeLeft: number;
     startTime: number | null;
     isRunning: boolean;
@@ -27,8 +28,8 @@ interface Timer {
 
 type TimerAction =
     | { type: 'START' }
-    | { type: 'PAUSE' }
     | { type: 'SKIP' }
+    | { type: 'RESET' }
     | { type: 'TICK' }
     | { type: 'CHANGE_DURATION' }
     | { type: 'CHANGE_STATE' }
@@ -36,22 +37,48 @@ type TimerAction =
 
 function reducer(state: Timer, action: TimerAction): Timer {
     switch (action.type) {
-        case 'START':
+        case 'START': // this also handles pausing
             return {
                 ...state,
                 isRunning: !state.isRunning,
-                startTime: Date.now(),
+                startTime: Date.now() - state.elapsedTime * 1000,
             };
-        case 'PAUSE':
-            // update
-            return { ...state, isRunning: false, startTime: Date.now() };
         case 'TICK': {
             // update time left
             if (state.startTime === null) return state;
-            const elapsedTime = Math.floor(
-                (Date.now() - state.startTime) / 1000,
-            );
-            return { ...state, timeLeft: state.durations.work - elapsedTime };
+            console.log(`Elapsed time ${state.elapsedTime}`);
+            return {
+                ...state,
+                elapsedTime: Math.floor((Date.now() - state.startTime) / 1000),
+                timeLeft: state.durations.work - state.elapsedTime,
+            };
+        }
+        case 'RESET': {
+            if (state.mode === 'work') {
+                return { ...state, startTime: Date.now(), elapsedTime: 0 };
+            } else if (state.mode === 'shortBreak') {
+                return { ...state, startTime: Date.now(), elapsedTime: 0 };
+            } else {
+                return {
+                    ...state,
+                    timeLeft: durations.longBreak,
+                    startTime: Date.now(),
+                    elapsedTime: 0,
+                };
+            }
+        }
+
+        case 'CHANGE_DURATION': {
+            // TODO
+            return state;
+        }
+        case 'CHANGE_STATE': {
+            // TODO
+            return state;
+        }
+        case 'CHANGE_LB_INTERVAL': {
+            // TODO
+            return state;
         }
         default:
             return state;
@@ -67,6 +94,7 @@ function App() {
     const initialState: Timer = {
         mode: 'work',
         durations: durations,
+        elapsedTime: 0,
         timeLeft: durations.work,
         startTime: null,
         isRunning: false,
@@ -84,8 +112,7 @@ function App() {
      * @returns mm:ss
      */
     function formatTime(time: number): string {
-        console.log(state.startTime);
-        console.log(`Formatting time ${time}`);
+        // console.log(`Formatting time ${time}`);
         const minutes = Math.floor(time / 60);
         // console.log(`Minutes ${minutes}`);
         const seconds = time % 60;
@@ -102,7 +129,7 @@ function App() {
         const intervalId = setInterval(() => {
             // console.log('updating timer');
             // get currently elapsed time
-            console.log('Timer started');
+            // console.log('Timer started');
             dispatch({ type: 'TICK' });
         }, 1000);
 
@@ -120,9 +147,9 @@ function App() {
             </form>
 
             <p>{formatTime(state.timeLeft)}</p>
-            <button onClick={() => dispatch({ type: 'START' })}>
-                Start timer
-            </button>
+            <button onClick={() => dispatch({ type: 'START' })}>Start</button>
+            <button onClick={() => dispatch({ type: 'RESET' })}>Reset</button>
+            <button onClick={() => dispatch({ type: 'SKIP' })}>Skip</button>
         </div>
     );
 }
