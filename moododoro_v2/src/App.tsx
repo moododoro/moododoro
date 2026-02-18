@@ -1,124 +1,34 @@
-import { useState, useEffect, useReducer } from 'react';
-
-/**
- * Timers have TimerStates, that contain a name, state, and length.
- */
-type TimerState = 'work' | 'shortBreak' | 'longBreak';
-
-/**
- * Defining where durations of timer states
- */
-type TimerDurations = {
-    work: number;
-    shortBreak: number;
-    longBreak: number;
-};
-
-/**
- * This is an interface for a Timer object
- */
-interface Timer {
-    mode: TimerState;
-    durations: TimerDurations;
-    elapsedTime: number;
-    timeLeft: number;
-    startTime: number | null;
-    isRunning: boolean;
-}
-
-type TimerAction =
-    | { type: 'START' }
-    | { type: 'SKIP' }
-    | { type: 'RESET' }
-    | { type: 'TICK' }
-    | { type: 'CHANGE_DURATION' }
-    | { type: 'CHANGE_STATE' }
-    | { type: 'CHANGE_LB_INTERVAL' };
-
-function reducer(state: Timer, action: TimerAction): Timer {
-    switch (action.type) {
-        case 'START': // this also handles pausing
-            return {
-                ...state,
-                isRunning: !state.isRunning,
-                startTime: Date.now() - state.elapsedTime * 1000,
-            };
-        case 'TICK': {
-            // update time left
-            if (state.startTime === null) return state;
-            console.log(`Elapsed time ${state.elapsedTime}`);
-            return {
-                ...state,
-                elapsedTime: Math.floor((Date.now() - state.startTime) / 1000),
-                timeLeft: state.durations.work - state.elapsedTime,
-            };
-        }
-        case 'RESET': {
-            if (state.mode === 'work') {
-                return { ...state, startTime: Date.now(), elapsedTime: 0 };
-            } else if (state.mode === 'shortBreak') {
-                return { ...state, startTime: Date.now(), elapsedTime: 0 };
-            } else {
-                return {
-                    ...state,
-                    timeLeft: durations.longBreak,
-                    startTime: Date.now(),
-                    elapsedTime: 0,
-                };
-            }
-        }
-
-        case 'CHANGE_DURATION': {
-            // TODO
-            return state;
-        }
-        case 'CHANGE_STATE': {
-            // TODO
-            return state;
-        }
-        case 'CHANGE_LB_INTERVAL': {
-            // TODO
-            return state;
-        }
-        default:
-            return state;
-    }
-}
+import { useState, useEffect, useReducer } from "react";
+import type { Timer, TimerDurations } from "./api/timerReducer";
+import { reducer } from "./api/timerReducer";
 
 function App() {
+    const [workDuration, setWorkDuration] = useState<number>(0);
+    const [sbDuration, setSBDuration] = useState<number>(0);
+    const [lbDuration, setLBDuration] = useState<number>(0);
+    const [longBreakInt, setLongBreakInt] = useState<number>(0);
+
     const durations: TimerDurations = {
         work: 1500,
         shortBreak: 300,
         longBreak: 600,
     };
     const initialState: Timer = {
-        mode: 'work',
+        mode: "work",
         durations: durations,
         elapsedTime: 0,
         timeLeft: durations.work,
         startTime: null,
         isRunning: false,
+        intervalBreak: 3,
+        intervals: 1,
+        autoStart: true,
     };
     const [state, dispatch] = useReducer(reducer, initialState);
 
-    function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
-        e.preventDefault();
-        // console.log(`Submission entered ${inputValue}`);
-    }
-
     /**
-     * Formats time in seconds to a clock time
-     * @param time in seconds
-     * @returns mm:ss
+     * This calls TICK every second
      */
-    function formatTime(time: number): string {
-        // console.log(`Formatting time ${time}`);
-        const minutes = Math.floor(time / 60);
-        // console.log(`Minutes ${minutes}`);
-        const seconds = time % 60;
-        return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    }
-
     useEffect(() => {
         // don't run if not set to true
         if (!state.isRunning) {
@@ -130,26 +40,61 @@ function App() {
             // console.log('updating timer');
             // get currently elapsed time
             // console.log('Timer started');
-            dispatch({ type: 'TICK' });
+            dispatch({ type: "TICK" });
         }, 1000);
 
         return () => {
             clearInterval(intervalId);
         };
-    }, [state.isRunning]);
+    }, [state.isRunning, state.mode]);
+
+    /**
+     * Formats time in seconds to a clock time
+     * @param time in seconds
+     * @returns mm:ss
+     */
+    function formatTime(time: number): string {
+        // console.log(`Formatting time ${time}`);
+        const minutes = Math.floor(time / 60);
+        // console.log(`Minutes ${minutes}`);
+        const seconds = time % 60;
+        return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+    }
+
+    /**
+     * This allows for a timer duration to be changed
+     * @param e event
+     * @param mode TimerDuration to change
+     */
+    function updateDuration(
+        e: React.SubmitEvent<HTMLFormElement>,
+        mode: keyof TimerDurations,
+        value: number,
+    ) {
+        //
+        e.preventDefault();
+        // update mode to value
+        dispatch({ type: "CHANGE_DURATION", field: mode, value: value });
+    }
 
     return (
         <div>
-            <form onSubmit={handleSubmit}>
-                <p>Enter time:</p>
-                <input type="text" />
+            <form onSubmit={(e) => updateDuration(e, "work", workDuration)}>
+                <p>Enter work time:</p>
+                <input
+                    value={workDuration}
+                    onChange={(e) => setWorkDuration(+e.target.value)}
+                    type="number"
+                />
                 <button className="border">Submit</button>
             </form>
 
             <p>{formatTime(state.timeLeft)}</p>
-            <button onClick={() => dispatch({ type: 'START' })}>Start</button>
-            <button onClick={() => dispatch({ type: 'RESET' })}>Reset</button>
-            <button onClick={() => dispatch({ type: 'SKIP' })}>Skip</button>
+            <p>{`Interval: #${state.intervals}`}</p>
+            <p>{`Mode: ${state.mode}`}</p>
+            <button onClick={() => dispatch({ type: "START" })}>Start</button>
+            <button onClick={() => dispatch({ type: "RESET" })}>Reset</button>
+            <button onClick={() => dispatch({ type: "SKIP" })}>Skip</button>
         </div>
     );
 }
