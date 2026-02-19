@@ -1,6 +1,10 @@
-import { useState, useEffect, useReducer } from "react";
+import { useEffect, useReducer } from "react";
 import type { Timer, TimerDurations } from "./api/timerReducer";
 import { reducer } from "./api/timerReducer";
+import Button from "./components/Button";
+import Header from "./components/Header";
+import type { Dispatch } from "react";
+import { formatTime } from "./api/formatTime";
 
 const durations: TimerDurations = {
     work: 1500,
@@ -20,10 +24,6 @@ const initialState: Timer = {
 };
 
 function App() {
-    const [workDuration, setWorkDuration] = useState<number>(0);
-    const [sbDuration, setSBDuration] = useState<number>(0);
-    const [lbDuration, setLBDuration] = useState<number>(0);
-    const [longBreakInt, setLongBreakInt] = useState<number>(0);
     const [state, dispatch] = useReducer(reducer, initialState);
 
     /**
@@ -48,58 +48,45 @@ function App() {
         };
     }, [state.isRunning, state.mode]);
 
-    /**
-     * Formats time in seconds to a clock time
-     * @param time in seconds
-     * @returns mm:ss
-     */
-    function formatTime(time: number): string {
-        if (time < 0) {
-            return "00:00";
-        }
-        // console.log(`Formatting time ${time}`);
-        const minutes = Math.floor(time / 60);
-        // console.log(`Minutes ${minutes}`);
-        const seconds = time % 60;
-        return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
-    }
-
-    /**
-     * This allows for a timer duration to be changed
-     * @param e event
-     * @param mode TimerDuration to change
-     */
-    function updateDuration(
-        e: React.SubmitEvent<HTMLFormElement>,
-        mode: keyof TimerDurations,
-        value: number,
-    ) {
-        //
-        e.preventDefault();
-        // update mode to value
-        dispatch({ type: "CHANGE_DURATION", field: mode, value: value });
-    }
-
     return (
-        <div>
-            <form onSubmit={(e) => updateDuration(e, "work", workDuration)}>
-                <p>Enter work time:</p>
-                <input
-                    value={workDuration}
-                    onChange={(e) => setWorkDuration(+e.target.value)}
-                    type="number"
-                />
-                <button className="border">Submit</button>
-            </form>
-
-            <p>{formatTime(state.timeLeft)}</p>
-            <p>{`Interval: #${state.intervals}`}</p>
-            <p>{`Mode: ${state.mode}`}</p>
-            <button onClick={() => dispatch({ type: "START" })}>Start</button>
-            <button onClick={() => dispatch({ type: "RESET" })}>Reset</button>
-            <button onClick={() => dispatch({ type: "SKIP" })}>Skip</button>
+        <div className="flex flex-col h-screen">
+            <Header state={state} dispatch={dispatch} />
+            <div className="bg-primary flex-1">
+                <Timer state={state} dispatch={dispatch} />
+            </div>
         </div>
     );
 }
-
+interface TimerProp {
+    state: Timer;
+    dispatch: Dispatch<TimerAction>;
+}
+const Timer = ({ state, dispatch }: TimerProp) => {
+    return (
+        <div className="*:text-white flex flex-col items-center">
+            <div className="border w-fit p-4 m-4">
+                <p className="text-9xl" id="timer">
+                    {formatTime(state.timeLeft)}
+                </p>
+            </div>
+            <div>
+                <Button
+                    label="Start"
+                    onClick={() => dispatch({ type: "START" })}
+                />
+                <Button
+                    label="Reset"
+                    onClick={() => dispatch({ type: "RESET" })}
+                />
+                <Button
+                    label="Skip"
+                    onClick={() => dispatch({ type: "SKIP" })}
+                />
+                <p>{`Interval: #${state.intervals}`}</p>
+                <p>{`Mode: ${state.mode}`}</p>
+                <p>{`LB Interval: #${state.intervalBreak}`}</p>
+            </div>
+        </div>
+    );
+};
 export default App;

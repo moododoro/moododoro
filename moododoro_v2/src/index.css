@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+@theme {
+    --color-primary: #51c4cc;
+    --color-secondary: #e5e0d8;
+}
+
+* {
+    font-family: "Franklin Gothic Light", Arial, sans-serif;
+}
+
+#timer {
+    font-family: "IBM Plex Mono";
+    font-weight: 700;
+}
+
+body,
+html,
+main {
+    margin: 0px;
+    overflow-x: hidden;
+}

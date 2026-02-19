@@ -141,11 +141,11 @@ export function reducer(state: Timer, action: TimerAction): Timer {
 
         case "CHANGE_DURATION": {
             // takes field and value
-            console.log(action.field);
-            console.log(action.value);
             return {
                 ...state,
                 durations: { ...state.durations, [action.field]: action.value },
+                timeLeft:
+                    action.field === state.mode ? action.value : state.timeLeft,
             };
         }
         case "CHANGE_LB_INTERVAL": {
