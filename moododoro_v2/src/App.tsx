@@ -2,28 +2,28 @@ import { useState, useEffect, useReducer } from "react";
 import type { Timer, TimerDurations } from "./api/timerReducer";
 import { reducer } from "./api/timerReducer";
 
+const durations: TimerDurations = {
+    work: 1500,
+    shortBreak: 300,
+    longBreak: 600,
+};
+const initialState: Timer = {
+    mode: "work",
+    durations: durations,
+    elapsedTime: 0,
+    timeLeft: durations.work,
+    startTime: null,
+    isRunning: false,
+    intervalBreak: 3,
+    intervals: 1,
+    autoStart: true,
+};
+
 function App() {
     const [workDuration, setWorkDuration] = useState<number>(0);
     const [sbDuration, setSBDuration] = useState<number>(0);
     const [lbDuration, setLBDuration] = useState<number>(0);
     const [longBreakInt, setLongBreakInt] = useState<number>(0);
-
-    const durations: TimerDurations = {
-        work: 1500,
-        shortBreak: 300,
-        longBreak: 600,
-    };
-    const initialState: Timer = {
-        mode: "work",
-        durations: durations,
-        elapsedTime: 0,
-        timeLeft: durations.work,
-        startTime: null,
-        isRunning: false,
-        intervalBreak: 3,
-        intervals: 1,
-        autoStart: true,
-    };
     const [state, dispatch] = useReducer(reducer, initialState);
 
     /**
@@ -54,6 +54,9 @@ function App() {
      * @returns mm:ss
      */
     function formatTime(time: number): string {
+        if (time < 0) {
+            return "00:00";
+        }
         // console.log(`Formatting time ${time}`);
         const minutes = Math.floor(time / 60);
         // console.log(`Minutes ${minutes}`);

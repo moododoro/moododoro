@@ -117,18 +117,21 @@ export function reducer(state: Timer, action: TimerAction): Timer {
                     ...state,
                     timeLeft: state.durations.work,
                     elapsedTime: 0,
+                    startTime: Date.now(),
                 };
             } else if (state.mode === "shortBreak") {
                 return {
                     ...state,
                     timeLeft: state.durations.shortBreak,
                     elapsedTime: 0,
+                    startTime: Date.now(),
                 };
             } else {
                 return {
                     ...state,
                     timeLeft: state.durations.longBreak,
                     elapsedTime: 0,
+                    startTime: Date.now(),
                 };
             }
         }
@@ -151,7 +154,6 @@ export function reducer(state: Timer, action: TimerAction): Timer {
             return {
                 ...state,
                 intervalBreak: action.value,
-                timeLeft: action.value - state.elapsedTime,
             };
         }
         case "CHANGE_AUTOSTART": {
