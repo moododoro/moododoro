@@ -1,10 +1,10 @@
-import { useEffect, useReducer } from "react";
-import type { Timer, TimerDurations } from "./api/timerReducer";
-import { reducer } from "./api/timerReducer";
-import Button from "./components/Button";
-import Header from "./components/Header";
-import type { Dispatch } from "react";
-import { formatTime } from "./api/formatTime";
+import { useEffect, useReducer } from 'react';
+import type { Timer, TimerDurations } from './api/timerReducer';
+import { reducer } from './api/timerReducer';
+import Button from './components/Button';
+import Header from './components/Header';
+import type { Dispatch } from 'react';
+import { formatTime } from './api/formatTime';
 
 const durations: TimerDurations = {
     work: 1500,
@@ -12,7 +12,7 @@ const durations: TimerDurations = {
     longBreak: 600,
 };
 const initialState: Timer = {
-    mode: "work",
+    mode: 'work',
     durations: durations,
     elapsedTime: 0,
     timeLeft: durations.work,
@@ -40,7 +40,7 @@ function App() {
             // console.log('updating timer');
             // get currently elapsed time
             // console.log('Timer started');
-            dispatch({ type: "TICK" });
+            dispatch({ type: 'TICK' });
         }, 1000);
 
         return () => {
@@ -72,15 +72,15 @@ const Timer = ({ state, dispatch }: TimerProp) => {
             <div>
                 <Button
                     label="Start"
-                    onClick={() => dispatch({ type: "START" })}
+                    onClick={() => dispatch({ type: 'START' })}
                 />
                 <Button
                     label="Reset"
-                    onClick={() => dispatch({ type: "RESET" })}
+                    onClick={() => dispatch({ type: 'RESET' })}
                 />
                 <Button
                     label="Skip"
-                    onClick={() => dispatch({ type: "SKIP" })}
+                    onClick={() => dispatch({ type: 'SKIP' })}
                 />
                 <p>{`Interval: #${state.intervals}`}</p>
                 <p>{`Mode: ${state.mode}`}</p>

@@ -1,9 +1,9 @@
-import { useState } from "react";
-import type { Dispatch } from "react";
-import type { Timer, TimerAction } from "../api/timerReducer";
-import DurationInput from "./DurationInput";
-import Button from "./Button";
-import Card from "./Card";
+import { useEffect, useState } from 'react';
+import type { Dispatch } from 'react';
+import type { Timer, TimerAction } from '../api/timerReducer';
+import DurationInput from './DurationInput';
+import Button from './Button';
+import Card from './Card';
 const logo = `${import.meta.env.BASE_URL}images/cow.png`;
 /**
  * Just one big navbar with proper colors.
@@ -20,6 +20,10 @@ const Header = ({ state, dispatch }: HeaderProps) => {
     const [longBreakInt, setLongBreakInt] = useState<number>(0);
     const [showSettings, setShowSettings] = useState(false);
     const [showBgCard, setShowBgCard] = useState(false);
+
+    useEffect(() => {
+        // when settings transitions from true to false, submit form
+    }, [showSettings]);
 
     return (
         <>
@@ -47,71 +51,139 @@ const Header = ({ state, dispatch }: HeaderProps) => {
                 </h3>
             </div>
             {showSettings && (
-                <Card>
-                    <DurationInput
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            setWorkDuration(+e.target.value)
-                        }
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            dispatch({
-                                type: "CHANGE_DURATION",
-                                field: "work",
-                                value: workDuration,
-                            });
+                <>
+                    <div
+                        className="fixed inset-0"
+                        onClick={() => {
+                            setShowSettings(false);
+                            // validate inputs before submission
+                            if (workDuration > 0) {
+                                dispatch({
+                                    type: 'CHANGE_DURATION',
+                                    field: 'work',
+                                    value: workDuration,
+                                });
+                            }
+
+                            if (sbDuration > 0) {
+                                dispatch({
+                                    type: 'CHANGE_DURATION',
+                                    field: 'shortBreak',
+                                    value: sbDuration,
+                                });
+                            }
+
+                            if (lbDuration > 0) {
+                                dispatch({
+                                    type: 'CHANGE_DURATION',
+                                    field: 'longBreak',
+                                    value: lbDuration,
+                                });
+                            }
+
+                            if (longBreakInt > 0) {
+                                dispatch({
+                                    type: 'CHANGE_LB_INTERVAL',
+                                    value: longBreakInt,
+                                });
+                            }
                         }}
-                        label={"Enter work time: "}
-                        value={workDuration}
                     />
-                    <DurationInput
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            setSBDuration(+e.target.value)
-                        }
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            dispatch({
-                                type: "CHANGE_DURATION",
-                                field: "shortBreak",
-                                value: sbDuration,
-                            });
-                        }}
-                        label={"Enter shortbreak time: "}
-                        value={sbDuration}
-                    />
-                    <DurationInput
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            setLBDuration(+e.target.value)
-                        }
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            dispatch({
-                                type: "CHANGE_DURATION",
-                                field: "longBreak",
-                                value: lbDuration,
-                            });
-                        }}
-                        label={"Enter longbreak time: "}
-                        value={lbDuration}
-                    />
-                    <DurationInput
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            setLongBreakInt(+e.target.value)
-                        }
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            dispatch({
-                                type: "CHANGE_LB_INTERVAL",
-                                value: longBreakInt,
-                            });
-                        }}
-                        label={"Change long break interval: "}
-                        value={longBreakInt}
-                    />
-                    <Button
-                        label={`Set autostart: ${state.autoStart}`}
-                        onClick={() => dispatch({ type: "CHANGE_AUTOSTART" })}
-                    />
-                </Card>
+                    <Card>
+                        <DurationInput
+                            onChange={(
+                                e: React.ChangeEvent<HTMLInputElement>,
+                            ) => setWorkDuration(+e.target.value)}
+                            onBlur={(e: React.FocusEvent<HTMLInputElement>) =>
+                                setWorkDuration(+e.target.value)
+                            }
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                dispatch({
+                                    type: 'CHANGE_DURATION',
+                                    field: 'work',
+                                    value: workDuration,
+                                });
+                            }}
+                            label={'Enter work time (min): '}
+                            value={workDuration}
+                        />
+                        <DurationInput
+                            onChange={(
+                                e: React.ChangeEvent<HTMLInputElement>,
+                            ) => setSBDuration(+e.target.value)}
+                            onBlur={(e) => {
+                                // should prob refactor to handleSubmit
+                                e.preventDefault();
+                                dispatch({
+                                    type: 'CHANGE_DURATION',
+                                    field: 'longBreak',
+                                    value: lbDuration,
+                                });
+                            }}
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                dispatch({
+                                    type: 'CHANGE_DURATION',
+                                    field: 'shortBreak',
+                                    value: sbDuration,
+                                });
+                            }}
+                            label={'Enter shortbreak time (min): '}
+                            value={sbDuration}
+                        />
+                        <DurationInput
+                            onChange={(
+                                e: React.ChangeEvent<HTMLInputElement>,
+                            ) => setLBDuration(+e.target.value)}
+                            onBlur={(e) => {
+                                e.preventDefault();
+                                dispatch({
+                                    type: 'CHANGE_DURATION',
+                                    field: 'longBreak',
+                                    value: lbDuration,
+                                });
+                            }}
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                dispatch({
+                                    type: 'CHANGE_DURATION',
+                                    field: 'longBreak',
+                                    value: lbDuration,
+                                });
+                            }}
+                            label={'Enter longbreak time (min): '}
+                            value={lbDuration}
+                        />
+                        <DurationInput
+                            onChange={(
+                                e: React.ChangeEvent<HTMLInputElement>,
+                            ) => setLongBreakInt(+e.target.value)}
+                            onBlur={(e) => {
+                                e.preventDefault();
+                                dispatch({
+                                    type: 'CHANGE_LB_INTERVAL',
+                                    value: longBreakInt,
+                                });
+                            }}
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                dispatch({
+                                    type: 'CHANGE_LB_INTERVAL',
+                                    value: longBreakInt,
+                                });
+                            }}
+                            label={'Change long break interval: '}
+                            value={longBreakInt}
+                        />
+                        <Button
+                            label={`Set autostart: ${state.autoStart}`}
+                            onClick={() =>
+                                dispatch({ type: 'CHANGE_AUTOSTART' })
+                            }
+                        />
+                    </Card>
+                </>
             )}
         </>
     );

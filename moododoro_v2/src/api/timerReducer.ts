@@ -1,7 +1,7 @@
 /**
  * Timers have TimerStates, that contain a name, state, and length.
  */
-export type TimerState = "work" | "shortBreak" | "longBreak";
+export type TimerState = 'work' | 'shortBreak' | 'longBreak';
 
 /**
  * Defining where durations of timer states
@@ -28,13 +28,13 @@ export interface Timer {
 }
 
 export type TimerAction =
-    | { type: "START" }
-    | { type: "SKIP" }
-    | { type: "RESET" }
-    | { type: "TICK" }
-    | { type: "CHANGE_DURATION"; field: keyof TimerDurations; value: number }
-    | { type: "CHANGE_LB_INTERVAL"; value: number }
-    | { type: "CHANGE_AUTOSTART" };
+    | { type: 'START' }
+    | { type: 'SKIP' }
+    | { type: 'RESET' }
+    | { type: 'TICK' }
+    | { type: 'CHANGE_DURATION'; field: keyof TimerDurations; value: number }
+    | { type: 'CHANGE_LB_INTERVAL'; value: number }
+    | { type: 'CHANGE_AUTOSTART' };
 
 /**
  * When time elapsed hits one, we need to set the next mode, it takes in the state
@@ -42,25 +42,25 @@ export type TimerAction =
 function nextMode(state: Timer): Timer {
     // check which state we are in
     const nextIntervals = state.intervals + 1;
-    if (state.mode === "work") {
+    if (state.mode === 'work') {
         // check if long or short break
 
         if (state.intervals % state.intervalBreak === 0) {
             // long break
-            console.log("-----------TRANISTION TO LONGBREAK------------");
+            console.log('-----------TRANISTION TO LONGBREAK------------');
             return {
                 ...state,
-                mode: "longBreak",
+                mode: 'longBreak',
                 elapsedTime: 0,
                 timeLeft: state.durations.longBreak,
                 startTime: Date.now(),
                 isRunning: state.autoStart,
             };
         } else {
-            console.log("-----------TRANISTION TO SHORTBREAK------------");
+            console.log('-----------TRANISTION TO SHORTBREAK------------');
             return {
                 ...state,
-                mode: "shortBreak",
+                mode: 'shortBreak',
                 elapsedTime: 0,
                 timeLeft: state.durations.shortBreak,
                 startTime: Date.now(),
@@ -69,11 +69,11 @@ function nextMode(state: Timer): Timer {
         }
     } else {
         // returning from break to work
-        console.log("-----------TRANISTION TO WORK------------");
+        console.log('-----------TRANISTION TO WORK------------');
         return {
             ...state,
             elapsedTime: 0,
-            mode: "work",
+            mode: 'work',
             intervals: nextIntervals,
             timeLeft: state.durations.work,
             startTime: Date.now(),
@@ -90,13 +90,13 @@ function nextMode(state: Timer): Timer {
  */
 export function reducer(state: Timer, action: TimerAction): Timer {
     switch (action.type) {
-        case "START": // this also handles pausing
+        case 'START': // this also handles pausing
             return {
                 ...state,
                 isRunning: !state.isRunning,
                 startTime: Date.now() - state.elapsedTime * 1000,
             };
-        case "TICK": {
+        case 'TICK': {
             // check elapsed time and change mode if need be
             if (state.timeLeft <= 0) {
                 return nextMode(state);
@@ -111,15 +111,15 @@ export function reducer(state: Timer, action: TimerAction): Timer {
                 timeLeft: state.durations[state.mode] - elapsed,
             };
         }
-        case "RESET": {
-            if (state.mode === "work") {
+        case 'RESET': {
+            if (state.mode === 'work') {
                 return {
                     ...state,
                     timeLeft: state.durations.work,
                     elapsedTime: 0,
                     startTime: Date.now(),
                 };
-            } else if (state.mode === "shortBreak") {
+            } else if (state.mode === 'shortBreak') {
                 return {
                     ...state,
                     timeLeft: state.durations.shortBreak,
@@ -135,20 +135,25 @@ export function reducer(state: Timer, action: TimerAction): Timer {
                 };
             }
         }
-        case "SKIP": {
+        case 'SKIP': {
             return nextMode(state);
         }
 
-        case "CHANGE_DURATION": {
+        case 'CHANGE_DURATION': {
             // takes field and value
             return {
                 ...state,
-                durations: { ...state.durations, [action.field]: action.value },
+                durations: {
+                    ...state.durations,
+                    [action.field]: action.value * 60,
+                },
                 timeLeft:
-                    action.field === state.mode ? action.value : state.timeLeft,
+                    action.field === state.mode
+                        ? action.value * 60
+                        : state.timeLeft,
             };
         }
-        case "CHANGE_LB_INTERVAL": {
+        case 'CHANGE_LB_INTERVAL': {
             // takes value
             console.log(action.value);
             return {
@@ -156,7 +161,7 @@ export function reducer(state: Timer, action: TimerAction): Timer {
                 intervalBreak: action.value,
             };
         }
-        case "CHANGE_AUTOSTART": {
+        case 'CHANGE_AUTOSTART': {
             return { ...state, autoStart: !state.autoStart };
         }
         default:
