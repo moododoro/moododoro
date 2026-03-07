@@ -8,7 +8,7 @@ interface ButtonProps {
 const Button = ({ label, onClick }: ButtonProps) => {
     return (
         <button
-            className="m-2 p-2 border hover:cursor-pointer hover:bg-[#cfcbc4] rounded"
+            className="m-2 p-2 border-2 rounded hover:cursor-pointer hover:bg-[#e5e0d8]"
             onClick={onClick}
         >
             {label}

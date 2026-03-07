@@ -1,10 +1,13 @@
-import { useEffect, useReducer } from 'react';
-import type { Timer, TimerDurations } from './api/timerReducer';
-import { reducer } from './api/timerReducer';
-import Button from './components/Button';
-import Header from './components/Header';
-import type { Dispatch } from 'react';
-import { formatTime } from './api/formatTime';
+import { useEffect, useReducer, useState } from "react";
+import type { Timer, TimerDurations } from "./api/timerReducer";
+import { reducer } from "./api/timerReducer";
+import Button from "./components/Button";
+import Header from "./components/Header";
+import type { Dispatch } from "react";
+import { formatTime } from "./api/formatTime";
+import type { TimerAction } from "./api/timerReducer";
+
+const DEFAULT_COLOR = "#51c4cc";
 
 const durations: TimerDurations = {
     work: 1500,
@@ -12,7 +15,7 @@ const durations: TimerDurations = {
     longBreak: 600,
 };
 const initialState: Timer = {
-    mode: 'work',
+    mode: "work",
     durations: durations,
     elapsedTime: 0,
     timeLeft: durations.work,
@@ -25,6 +28,7 @@ const initialState: Timer = {
 
 function App() {
     const [state, dispatch] = useReducer(reducer, initialState);
+    const [bg, setBg] = useState(DEFAULT_COLOR);
 
     /**
      * This calls TICK every second
@@ -40,7 +44,7 @@ function App() {
             // console.log('updating timer');
             // get currently elapsed time
             // console.log('Timer started');
-            dispatch({ type: 'TICK' });
+            dispatch({ type: "TICK" });
         }, 1000);
 
         return () => {
@@ -50,8 +54,8 @@ function App() {
 
     return (
         <div className="flex flex-col h-screen">
-            <Header state={state} dispatch={dispatch} />
-            <div className="bg-primary flex-1">
+            <Header state={state} dispatch={dispatch} bg={bg} setBg={setBg} />
+            <div style={{ backgroundColor: bg }} className="flex-1">
                 <Timer state={state} dispatch={dispatch} />
             </div>
         </div>
@@ -61,30 +65,42 @@ interface TimerProp {
     state: Timer;
     dispatch: Dispatch<TimerAction>;
 }
+
+const modes = {
+    shortBreak: "short break",
+    work: "work",
+    longBreak: "long break",
+};
 const Timer = ({ state, dispatch }: TimerProp) => {
+    console.log(state.isRunning);
     return (
-        <div className="*:text-white flex flex-col items-center">
-            <div className="border w-fit p-4 m-4">
-                <p className="text-9xl" id="timer">
+        <div className="*:text-white flex flex-col items-center justify-start pt-40 min-h-screen text-xl">
+            <div
+                id="timer"
+                className="border-double border-4 w-fit px-8 py-12 m-4"
+            >
+                <p className="text-9xl font-family-mono" id="timer">
                     {formatTime(state.timeLeft)}
                 </p>
             </div>
-            <div>
-                <Button
-                    label="Start"
-                    onClick={() => dispatch({ type: 'START' })}
-                />
-                <Button
-                    label="Reset"
-                    onClick={() => dispatch({ type: 'RESET' })}
-                />
-                <Button
-                    label="Skip"
-                    onClick={() => dispatch({ type: 'SKIP' })}
-                />
-                <p>{`Interval: #${state.intervals}`}</p>
-                <p>{`Mode: ${state.mode}`}</p>
-                <p>{`LB Interval: #${state.intervalBreak}`}</p>
+            <p>25</p>
+            <div className="flex flex-col items-center text-2xl">
+                <div className="grid grid-cols-3">
+                    <Button
+                        label={state.isRunning ? "Pause" : "Start"}
+                        onClick={() => dispatch({ type: "START" })}
+                    />
+                    <Button
+                        label="Reset"
+                        onClick={() => dispatch({ type: "RESET" })}
+                    />
+                    <Button
+                        label="Skip"
+                        onClick={() => dispatch({ type: "SKIP" })}
+                    />
+                </div>
+                <p>{`#${state.intervals}`}</p>
+                <p>{`${modes[state.mode]}`}</p>
             </div>
         </div>
     );

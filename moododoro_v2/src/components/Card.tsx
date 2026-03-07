@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 const Card = ({
     children,
@@ -7,7 +7,7 @@ const Card = ({
 }: React.HTMLAttributes<HTMLDivElement>) => {
     return (
         <div
-            className={`absolute w-fit bg-secondary border shadow-md p-4 ${className ?? ''}`}
+            className={`absolute w-fit bg-secondary border shadow-md p-4 ${className ?? ""}`}
             {...props}
         >
             {children}
