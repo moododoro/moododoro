@@ -1,13 +1,12 @@
 import { useEffect, useReducer, useState } from "react";
-import type { Timer, TimerDurations } from "./api/timerReducer";
-import { reducer } from "./api/timerReducer";
-import Button from "./components/Button";
-import Header from "./components/Header";
+import type { Timer, TimerDurations } from "./api/utils/timerReducer";
+import { reducer } from "./api/utils/timerReducer";
+import Button from "./components/ui/Button";
+import Header from "./components/Header/Header";
 import type { Dispatch } from "react";
-import { formatTime } from "./api/formatTime";
-import type { TimerAction } from "./api/timerReducer";
-
-const DEFAULT_COLOR = "#51c4cc";
+import { formatTime } from "./api/utils/formatTime";
+import type { TimerAction } from "./api/utils/timerReducer";
+import { DEFAULT_COLOR } from "./api/globals/constants";
 
 const durations: TimerDurations = {
     work: 1500,
@@ -83,18 +82,20 @@ const Timer = ({ state, dispatch }: TimerProp) => {
                     {formatTime(state.timeLeft)}
                 </p>
             </div>
-            <p>25</p>
             <div className="flex flex-col items-center text-2xl">
                 <div className="grid grid-cols-3">
                     <Button
+                        className="w-24"
                         label={state.isRunning ? "Pause" : "Start"}
                         onClick={() => dispatch({ type: "START" })}
                     />
                     <Button
+                        className="w-24"
                         label="Reset"
                         onClick={() => dispatch({ type: "RESET" })}
                     />
                     <Button
+                        className="w-24"
                         label="Skip"
                         onClick={() => dispatch({ type: "SKIP" })}
                     />

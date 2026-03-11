@@ -1,0 +1,235 @@
+import { useEffect, useState } from "react";
+import type { Dispatch } from "react";
+import type { Timer, TimerAction } from "../../api/utils/timerReducer";
+import DurationInput from "./DurationInput";
+import Button from "../ui/Button";
+import Card from "../ui/Card";
+import { DEFAULT_COLOR } from "../../api/globals/constants";
+const logo = `${import.meta.env.BASE_URL}images/cow.png`;
+/**
+ * Just one big navbar with proper colors.
+ * @returns
+ */
+interface HeaderProps {
+    state: Timer;
+    dispatch: Dispatch<TimerAction>;
+    bg: string;
+    setBg: React.Dispatch<React.SetStateAction<string>>;
+}
+const Header = ({ state, dispatch, bg, setBg }: HeaderProps) => {
+    const [workDuration, setWorkDuration] = useState<number>(0);
+    const [sbDuration, setSBDuration] = useState<number>(0);
+    const [lbDuration, setLBDuration] = useState<number>(0);
+    const [longBreakInt, setLongBreakInt] = useState<number>(0);
+    const [showSettings, setShowSettings] = useState(false);
+    const [showBgCard, setShowBgCard] = useState(false);
+
+    useEffect(() => {
+        // when settings transitions from true to false, submit form
+    }, [showSettings]);
+
+    return (
+        <>
+            <div className="min-w-screen m-0 p-0 border-b bg-secondary flex">
+                <img src={logo} width="50px" className="mx-2 my-0.5" />
+                <h3 className="text-3xl px-2">moododoro</h3>
+                <div className="flex">
+                    <div>
+                        <h3
+                            className=" relative text-3xl px-2 hover:cursor-pointer hover:bg-[#cfcbc4]"
+                            onClick={() => {
+                                setShowBgCard((prev) => !prev);
+                                setShowSettings(false);
+                            }}
+                        >
+                            background
+                        </h3>
+                        {showBgCard && (
+                            <div>
+                                <div
+                                    className="fixed inset-0 top-10"
+                                    onClick={() => {
+                                        setShowBgCard(false);
+                                    }}
+                                />
+                                <Card className="flex flex-col items-center">
+                                    <div className="flex items-center">
+                                        <label>set background color</label>
+                                        <input
+                                            className="m-1 rounded"
+                                            type="color"
+                                            value={bg}
+                                            onChange={(e) =>
+                                                setBg(e.target.value)
+                                            }
+                                        />
+                                    </div>
+                                    <button
+                                        className="m-2 p-2 border-2 rounded hover:cursor-pointer hover:bg-[#e5e0d8]"
+                                        type="button"
+                                        onClick={() => setBg(DEFAULT_COLOR)}
+                                    >
+                                        set background color to default
+                                    </button>
+                                </Card>
+                            </div>
+                        )}
+                    </div>
+
+                    <div>
+                        <h3
+                            className="text-3xl px-2 hover:cursor-pointer hover:bg-[#cfcbc4]"
+                            onClick={() => {
+                                console.log(typeof state);
+                                setShowSettings((prev) => !prev);
+                                setShowBgCard(false);
+                            }}
+                        >
+                            settings
+                        </h3>
+
+                        {showSettings && (
+                            <>
+                                <div
+                                    className="fixed inset-0"
+                                    onClick={() => {
+                                        setShowSettings(false);
+                                        // validate inputs before submission
+                                        if (workDuration > 0) {
+                                            dispatch({
+                                                type: "CHANGE_DURATION",
+                                                field: "work",
+                                                value: workDuration,
+                                            });
+                                        }
+
+                                        if (sbDuration > 0) {
+                                            dispatch({
+                                                type: "CHANGE_DURATION",
+                                                field: "shortBreak",
+                                                value: sbDuration,
+                                            });
+                                        }
+
+                                        if (lbDuration > 0) {
+                                            dispatch({
+                                                type: "CHANGE_DURATION",
+                                                field: "longBreak",
+                                                value: lbDuration,
+                                            });
+                                        }
+
+                                        if (longBreakInt > 0) {
+                                            dispatch({
+                                                type: "CHANGE_LB_INTERVAL",
+                                                value: longBreakInt,
+                                            });
+                                        }
+                                    }}
+                                />
+                                <Card>
+                                    <DurationInput
+                                        onChange={(
+                                            e: React.ChangeEvent<HTMLInputElement>,
+                                        ) => setWorkDuration(+e.target.value)}
+                                        onBlur={(
+                                            e: React.FocusEvent<HTMLInputElement>,
+                                        ) => setWorkDuration(+e.target.value)}
+                                        onSubmit={(e) => {
+                                            e.preventDefault();
+                                            dispatch({
+                                                type: "CHANGE_DURATION",
+                                                field: "work",
+                                                value: workDuration,
+                                            });
+                                        }}
+                                        label={"Enter work time (min): "}
+                                        value={workDuration}
+                                    />
+                                    <DurationInput
+                                        onChange={(
+                                            e: React.ChangeEvent<HTMLInputElement>,
+                                        ) => setSBDuration(+e.target.value)}
+                                        onBlur={(e) => {
+                                            // should prob refactor to handleSubmit
+                                            e.preventDefault();
+                                            dispatch({
+                                                type: "CHANGE_DURATION",
+                                                field: "longBreak",
+                                                value: lbDuration,
+                                            });
+                                        }}
+                                        onSubmit={(e) => {
+                                            e.preventDefault();
+                                            dispatch({
+                                                type: "CHANGE_DURATION",
+                                                field: "shortBreak",
+                                                value: sbDuration,
+                                            });
+                                        }}
+                                        label={"Enter shortbreak time (min): "}
+                                        value={sbDuration}
+                                    />
+                                    <DurationInput
+                                        onChange={(
+                                            e: React.ChangeEvent<HTMLInputElement>,
+                                        ) => setLBDuration(+e.target.value)}
+                                        onBlur={(e) => {
+                                            e.preventDefault();
+                                            dispatch({
+                                                type: "CHANGE_DURATION",
+                                                field: "longBreak",
+                                                value: lbDuration,
+                                            });
+                                        }}
+                                        onSubmit={(e) => {
+                                            e.preventDefault();
+                                            dispatch({
+                                                type: "CHANGE_DURATION",
+                                                field: "longBreak",
+                                                value: lbDuration,
+                                            });
+                                        }}
+                                        label={"Enter longbreak time (min): "}
+                                        value={lbDuration}
+                                    />
+                                    <DurationInput
+                                        onChange={(
+                                            e: React.ChangeEvent<HTMLInputElement>,
+                                        ) => setLongBreakInt(+e.target.value)}
+                                        onBlur={(e) => {
+                                            e.preventDefault();
+                                            dispatch({
+                                                type: "CHANGE_LB_INTERVAL",
+                                                value: longBreakInt,
+                                            });
+                                        }}
+                                        onSubmit={(e) => {
+                                            e.preventDefault();
+                                            dispatch({
+                                                type: "CHANGE_LB_INTERVAL",
+                                                value: longBreakInt,
+                                            });
+                                        }}
+                                        label={"Change long break interval: "}
+                                        value={longBreakInt}
+                                    />
+                                    <Button
+                                        label={`Set autostart: ${state.autoStart}`}
+                                        onClick={() =>
+                                            dispatch({
+                                                type: "CHANGE_AUTOSTART",
+                                            })
+                                        }
+                                    />
+                                </Card>
+                            </>
+                        )}
+                    </div>
+                </div>
+            </div>
+        </>
+    );
+};
+
+export default Header;
